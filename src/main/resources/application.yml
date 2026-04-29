@@ -1,0 +1,21 @@
+spring:
+  application:
+    name:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sistema_emprestimo?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: Henrique_1223
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: false
+    open-in-view: false
+
+logging:
+  level:
+    #    root: WARN
+    com.henrique: DEBUG
