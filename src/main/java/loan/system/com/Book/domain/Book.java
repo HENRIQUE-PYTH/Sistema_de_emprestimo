@@ -1,13 +1,19 @@
 package loan.system.com.Book.domain;
 
 import jakarta.persistence.*;
+import loan.system.com.Book.BookStatus;
 import loan.system.com.Book.serializer.GenderSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import loan.system.com.Loan.domain.Loan;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Objects;
-
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "Books")
 public class Book {
@@ -22,8 +28,8 @@ public class Book {
     @Column(nullable = false, name = "Author", length = 100)
     private String author;
 
-    @Column(name = "Available", nullable = false)
-    private Boolean available;
+    @Enumerated(EnumType.STRING)
+    private BookStatus status;
 
     @Column(name = "book_number", nullable = false, unique = true)
     private String isbn;
@@ -41,89 +47,14 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Loan> loan;
 
-    public Book() {
-    }
-
-    public Book(String title, String author, Boolean available, String isbn, String genre, Integer publicationYear, Boolean active) {
+    public Book(String title, String author, BookStatus status, String isbn, String genre, Integer publicationYear, Boolean active) {
         this.title = title;
         this.author = author;
-        this.available = available;
+        this.status = status;
         this.isbn = isbn;
         this.genre = genre;
         this.publicationYear = publicationYear;
         this.active = active;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Boolean getAvailable() {
-        return available;
-    }
-
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public Integer getPublicationYear() {
-        return publicationYear;
-    }
-
-    public void setPublicationYear(Integer publicationYear) {
-        this.publicationYear = publicationYear;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public List<Loan> getLoan() {
-        return loan;
-    }
-
-    public void setLoan(List<Loan> loan) {
-        this.loan = loan;
     }
 
     @Override

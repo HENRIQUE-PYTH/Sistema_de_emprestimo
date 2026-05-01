@@ -2,11 +2,19 @@ package loan.system.com.Loan.domain;
 
 import jakarta.persistence.*;
 import loan.system.com.Book.domain.Book;
+import loan.system.com.Loan.LoanStatus;
 import loan.system.com.User.domain.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "Loans")
 public class Loan {
@@ -36,10 +44,10 @@ public class Loan {
     private BigDecimal fineAmount;
 
     @Column(name = "days_late")
-    private Integer daysLate;
+    private BigDecimal daysLate;
 
-    public Loan() {
-    }
+    @Enumerated(EnumType.STRING)
+    private LoanStatus status;
 
     public Loan(User user,
                 Book book,
@@ -47,7 +55,8 @@ public class Loan {
                 LocalDate dueDate,
                 LocalDate returnDate,
                 BigDecimal fineAmount,
-                Integer daysLate) {
+                BigDecimal daysLate,
+                LoanStatus status) {
         this.user = user;
         this.book = book;
         this.loanDate = loanDate;
@@ -55,70 +64,7 @@ public class Loan {
         this.returnDate = returnDate;
         this.fineAmount = fineAmount;
         this.daysLate = daysLate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public LocalDate getLoanDate() {
-        return loanDate;
-    }
-
-    public void setLoanDate(LocalDate loanDate) {
-        this.loanDate = loanDate;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public BigDecimal getFineAmount() {
-        return fineAmount;
-    }
-
-    public void setFineAmount(BigDecimal fineAmount) {
-        this.fineAmount = fineAmount;
-    }
-
-    public Integer getDaysLate() {
-        return daysLate;
-    }
-
-    public void setDaysLate(Integer daysLate) {
-        this.daysLate = daysLate;
+        this.status = status;
     }
 
     @Override

@@ -1,20 +1,17 @@
 package loan.system.com.Book.service;
 
+import loan.system.com.Book.BookStatus;
 import loan.system.com.Book.domain.Book;
-import loan.system.com.Book.dto.BookRequestDTO;
 import loan.system.com.Book.repository.BookRepository;
 import loan.system.com.exception.BadRequestException;
-import loan.system.com.exception.GlobalExceptionHandler;
 import loan.system.com.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class BookService {
 
     private final BookRepository repository;
-    private GlobalExceptionHandler exceptionHandler;
 
     public BookService(BookRepository repository) {
         this.repository = repository;
@@ -29,19 +26,19 @@ public class BookService {
     }
 
     public Book createBook (Book book){
-        if (book.getTitle().isBlank() || book.getTitle() == null){
+        if (book.getTitle().isBlank()){
             throw new BadRequestException("It is not possible to create a book without a name.");
         }
-        if (book.getAuthor().isBlank() || book.getAuthor() == null){
+        if (book.getAuthor().isBlank()){
             throw new BadRequestException("An author is needed to create a book.");
         }
-        if (book.getAvailable() == false || book.getAvailable() == null){
+        if (book.getStatus() == BookStatus.INACTIVE || book.getStatus() == null){
             throw new BadRequestException("The book needs an evaluation so that it can be recommended or not.");
         }
-        if (book.getIsbn().isBlank() || book.getIsbn() == null) {
+        if (book.getIsbn().isBlank()) {
             throw new BadRequestException("The book needs a verification code (ISBN).");
         }
-        if (book.getGenre().isBlank() || book.getGenre() == null){
+        if (book.getGenre().isBlank()){
             throw new BadRequestException("The book needs a genre.");
         }
         if (book.getPublicationYear() == null){
@@ -52,11 +49,11 @@ public class BookService {
 
         save.setTitle(book.getTitle());
         save.setAuthor(book.getAuthor());
-        save.setAvailable(book.getAvailable());
+        save.setStatus(BookStatus.AVAILABLE);
         save.setIsbn(book.getIsbn());
         save.setGenre(book.getGenre());
         save.setPublicationYear(book.getPublicationYear());
-        save.setActive(book.getActive());
+        save.setActive(true);
 
         return repository.save(save);
     }
@@ -64,6 +61,6 @@ public class BookService {
     public void deleteBook (Long id){
         Book book = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
-        repository.delete(book);
+        book.setActive(false);
     }
 }

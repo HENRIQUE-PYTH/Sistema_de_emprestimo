@@ -1,5 +1,6 @@
 package loan.system.com.User.service;
 
+import loan.system.com.User.UserStatus;
 import loan.system.com.User.domain.User;
 import loan.system.com.User.dto.UserRequestDTO;
 import loan.system.com.User.repository.UserRepository;
@@ -35,9 +36,13 @@ public class UserService {
         if (repository.existsByEmail(user.getEmail())){
             throw new ConflictRequestException("Email already registered");
         }
+
+        UserStatus status = UserStatus.ACTIVE;
+
         User userSave = new User(
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                status
         );
         return repository.save(userSave);
     }

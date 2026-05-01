@@ -2,10 +2,17 @@ package loan.system.com.User.domain;
 
 import jakarta.persistence.*;
 import loan.system.com.Loan.domain.Loan;
+import loan.system.com.User.UserStatus;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Objects;
 
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "Users")
 public class User {
@@ -20,39 +27,17 @@ public class User {
     @Column(unique = true, nullable = false, length = 200)
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @OneToMany(mappedBy = "user")
     private List<Loan> loan;
 
-    public User() {
-    }
 
-    public User(String name, String email) {
+    public User(String name, String email, UserStatus status) {
         this.name = name;
         this.email = email;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+        this.status = status;
     }
 
     @Override
