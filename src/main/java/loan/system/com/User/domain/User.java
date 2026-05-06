@@ -31,7 +31,7 @@ public class User {
     private UserStatus status;
 
     @OneToMany(mappedBy = "user")
-    private List<Loan> loan;
+    private List<Loan> loans;
 
 
     public User(String name, String email, UserStatus status) {

@@ -1,5 +1,6 @@
 package loan.system.com.User.service;
 
+import loan.system.com.Loan.service.LoanRuleService;
 import loan.system.com.User.UserStatus;
 import loan.system.com.User.domain.User;
 import loan.system.com.User.dto.UserRequestDTO;
@@ -15,9 +16,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository repository;
+    private final LoanRuleService service;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, LoanRuleService service) {
         this.repository = repository;
+        this.service = service;
     }
 
     public List<User> findAll(){
@@ -50,7 +53,7 @@ public class UserService {
     public User updateUser (Long id, User user){
         User find = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-        user.setName(user.getName());
+        find.setName(user.getName());
         return repository.save(user);
 
     }
@@ -60,5 +63,21 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
         repository.delete(user);
     }
+
+    public List<User> allUsersBlocked(){
+        return repository.findByStatus(UserStatus.BLOCKED);
+    }
+
+    public boolean isUserBlocked (Long userId){
+        return repository.findByIdAndStatus(userId, UserStatus.BLOCKED);
+    }
+
+    public User unblockUser (Long id){
+        User user = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        user.setStatus(UserStatus.ACTIVE);
+        return repository.save(user);
+    }
+
     
 }

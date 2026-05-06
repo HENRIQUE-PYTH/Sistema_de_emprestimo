@@ -9,12 +9,9 @@ import loan.system.com.Loan.repository.LoanRepository;
 import loan.system.com.User.UserStatus;
 import loan.system.com.User.domain.User;
 import loan.system.com.User.repository.UserRepository;
-import loan.system.com.exception.BadRequestException;
 import loan.system.com.exception.ConflictRequestException;
 import loan.system.com.exception.NotFoundException;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -27,11 +24,13 @@ public class LoanService {
     private final LoanRepository repository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final LoanRuleService service;
 
-    public LoanService(LoanRepository repository, BookRepository bookRepository, UserRepository userRepository) {
+    public LoanService(LoanRepository repository, BookRepository bookRepository, UserRepository userRepository, LoanRuleService service) {
         this.repository = repository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
+        this.service = service;
     }
 
     public List<Loan> findAllLoans (){
@@ -46,6 +45,24 @@ public class LoanService {
 
     public List <Loan> findByUser (Long id){
         return repository.findByUserId(id);
+    }
+
+    public List<Loan> getUserLoanHistory (Long userId){
+        userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        return repository.findByUserIdOrderByLoanDateDesc(userId);
+    }
+
+    public List<User> getUsersWithOverdueLoans() {
+
+        List<Loan> overdueLoans = repository
+                .findByDueDateBeforeAndStatus(LocalDate.now(), LoanStatus.ACTIVE);
+
+        return overdueLoans.stream()
+                .map(Loan::getUser)
+                .distinct()
+                .toList();
     }
 
     public List<Loan> findOverdueLoans() {
@@ -84,6 +101,13 @@ public class LoanService {
         if (!book.getActive()){
             throw new ConflictRequestException("This is book is not available");
         }
+        if (service.hasReachedLoanLimit(userId)){
+            throw new ConflictRequestException("User has reached loan limit");
+        }
+        if (service.hasOverdueLoans(userId)){
+            user.setStatus(UserStatus.BLOCKED);
+            throw new ConflictRequestException("The user is blocked");
+        }
         Loan loan = new Loan();
 
         LocalDate loanDate = LocalDate.now();
@@ -113,7 +137,7 @@ public class LoanService {
                 finePerDay,
                 LoanStatus.ACTIVE
         );
-
+        userRepository.save(user);
         return repository.save(loanSave);
     }
 
