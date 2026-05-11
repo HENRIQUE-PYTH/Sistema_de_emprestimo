@@ -94,7 +94,7 @@ public class UserController {
             required = true,
             content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
     )
-    public UserResponseDTO createUser (@RequestBody @Valid UserRequestDTO dto){
+    public UserResponseDTO createUser (@org.springframework.web.bind.annotation.RequestBody @Valid UserRequestDTO dto){
         User user = mapper.toEntity(dto);
         User create = service.createUser(user);
         return mapper.toResponse(create);
@@ -125,7 +125,9 @@ public class UserController {
             content = @Content(schema = @Schema(implementation = UserRequestDTO.class))
     )
 
-    public UserResponseDTO updatingUser (@PathVariable Long id, @RequestBody @Valid UserRequestDTO dto){
+    public UserResponseDTO updatingUser (@PathVariable Long id,
+                                         @org.springframework.web.bind.annotation.RequestBody @Valid UserRequestDTO dto)
+    {
         User user = mapper.toEntity(dto);
         User find = service.updateUser(id, user);
         return mapper.toResponse(find);

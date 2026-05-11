@@ -54,7 +54,7 @@ public class UserService {
         User find = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         find.setName(user.getName());
-        return repository.save(user);
+        return repository.save(find);
 
     }
 

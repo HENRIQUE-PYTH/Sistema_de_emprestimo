@@ -69,7 +69,7 @@ public class BookController {
             required = true,
             content = @Content(schema = @Schema(implementation = BookRequestDTO.class))
     )
-    public BookResponseDTO createBook (@RequestBody @Valid BookRequestDTO dto){
+    public BookResponseDTO createBook (@org.springframework.web.bind.annotation.RequestBody @Valid BookRequestDTO dto){
         Book book = mapper.toEntity(dto);
         Book save = service.createBook(book);
         return mapper.toResponse(save);

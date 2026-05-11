@@ -25,7 +25,7 @@ public class MapperBook {
         dto.setAuthor(book.getAuthor());
         dto.setIsbn(book.getIsbn());
         dto.setGenre(book.getGenre());
-        book.setPublicationYear(book.getPublicationYear());
+        dto.setPublicationYear(book.getPublicationYear());
         dto.setActive(book.getActive());
         return dto;
     }

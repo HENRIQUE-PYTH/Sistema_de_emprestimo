@@ -10,8 +10,9 @@ public class UserMapper {
 
     public UserResponseDTO toResponse (User user){
         UserResponseDTO dto = new UserResponseDTO();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
         return dto;
     }
 

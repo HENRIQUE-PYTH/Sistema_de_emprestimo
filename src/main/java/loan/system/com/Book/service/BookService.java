@@ -32,8 +32,8 @@ public class BookService {
         if (book.getAuthor().isBlank()){
             throw new BadRequestException("An author is needed to create a book.");
         }
-        if (book.getStatus() == BookStatus.INACTIVE || book.getStatus() == null){
-            throw new BadRequestException("The book needs an evaluation so that it can be recommended or not.");
+        if (book.getStatus() == BookStatus.INACTIVE){
+            throw new BadRequestException("Inactive books cannot be recommended.");
         }
         if (book.getIsbn().isBlank()) {
             throw new BadRequestException("The book needs a verification code (ISBN).");
@@ -62,5 +62,6 @@ public class BookService {
         Book book = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
         book.setActive(false);
+        repository.save(book);
     }
 }

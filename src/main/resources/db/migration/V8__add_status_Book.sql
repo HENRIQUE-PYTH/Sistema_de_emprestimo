@@ -1,0 +1,2 @@
+ALTER TABLE book
+ADD COLUMN status VARCHAR(255)

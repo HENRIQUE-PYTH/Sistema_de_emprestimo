@@ -34,7 +34,7 @@ public class Book {
     @Column(name = "book_number", nullable = false, unique = true)
     private String isbn;
 
-    @Column(name = "gênero", nullable = false)
+    @Column(name = "genre", nullable = false)
     @JsonSerialize(using = GenderSerializer.class)
     private String genre;
 

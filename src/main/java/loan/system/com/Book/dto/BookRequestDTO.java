@@ -19,9 +19,6 @@ public class BookRequestDTO {
     @NotBlank(message = "Title is required")
     private String title;
 
-    @NotNull(message = "Available is required")
-    private Boolean available;
-
     @NotBlank(message = "ISBN is required")
     private String isbn;
 
