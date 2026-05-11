@@ -18,7 +18,6 @@ import java.time.LocalDate;
 public class LoanResponseDTO {
 
     private Long id;
-
     private Long userId;
     private Long bookId;
 
@@ -27,9 +26,9 @@ public class LoanResponseDTO {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dueDate;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate returnDate;
 
+    private LocalDate returnDate;
     private BigDecimal fineAmount;
-    private Integer daysLate;
+    private BigDecimal daysLate;
 
 }

@@ -1,5 +1,6 @@
 package loan.system.com.User.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import loan.system.com.Loan.domain.Loan;
 import loan.system.com.User.UserStatus;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "Users")
+@Table(name = "user")
 public class User {
 
     @Id
@@ -27,6 +28,7 @@ public class User {
     @Column(unique = true, nullable = false, length = 200)
     private String email;
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 

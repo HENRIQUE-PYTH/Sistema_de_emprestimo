@@ -37,6 +37,14 @@ public class LoanService {
         return repository.findAll();
     }
 
+    public List<Loan> getAllActiveLoans (){
+        return repository.findByStatus(LoanStatus.ACTIVE);
+    }
+
+    public List<Loan> getActiveLoansByUser(Long userId){
+        return repository.findByUserIdAndStatus(userId, LoanStatus.ACTIVE);
+    }
+
     public Loan findById(Long loanId){
         Loan loan = repository.findById(loanId)
                 .orElseThrow(() -> new NotFoundException("Loan not found"));
@@ -89,6 +97,7 @@ public class LoanService {
     public Loan createLoan (Long userId, Long bookId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
 
@@ -100,6 +109,9 @@ public class LoanService {
         }
         if (!book.getActive()){
             throw new ConflictRequestException("This is book is not available");
+        }
+        if (service.hasPendingFines(userId)){
+            throw new ConflictRequestException("The user has pending fines");
         }
         if (service.hasReachedLoanLimit(userId)){
             throw new ConflictRequestException("User has reached loan limit");
@@ -178,6 +190,20 @@ public class LoanService {
         bookRepository.save(book);
 
         return repository.save(loan);
+    }
+
+    public BigDecimal getTotalPendingFines (Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        BigDecimal total = BigDecimal.ZERO;
+
+        for(Loan loan : user.getLoans()){
+            if (loan.getFineAmount() != null){
+                total = total.add(loan.getFineAmount());
+            }
+        }
+
+        return total;
     }
 
 

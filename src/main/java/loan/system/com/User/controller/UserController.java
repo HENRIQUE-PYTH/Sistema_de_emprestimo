@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Users")
+@RequestMapping("user")
 @Tag(name = "Users", description = "endpoint for managing Users")
 public class UserController {
 

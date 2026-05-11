@@ -12,7 +12,6 @@ public class MapperBook {
         Book book = new Book();
         book.setTitle(dto.getTitle());
         book.setAuthor(dto.getAuthor());
-        book.setAvailable(dto.getAvailable());
         book.setIsbn(dto.getIsbn());
         book.setGenre(dto.getGenre());
         book.setPublicationYear(dto.getPublicationYear());
@@ -24,7 +23,6 @@ public class MapperBook {
         dto.setId(book.getId());
         dto.setTitle(book.getTitle());
         dto.setAuthor(book.getAuthor());
-        dto.setAvailable(book.getAvailable());
         dto.setIsbn(book.getIsbn());
         dto.setGenre(book.getGenre());
         book.setPublicationYear(book.getPublicationYear());

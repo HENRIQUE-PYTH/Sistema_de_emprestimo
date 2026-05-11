@@ -1,0 +1,2 @@
+ALTER TABLE loan
+ADD COLUMN status VARCHAR(255);

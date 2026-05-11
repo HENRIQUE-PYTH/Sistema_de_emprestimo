@@ -22,32 +22,10 @@ public class LoanRuleService {
         this.userRepository = userRepository;
     }
 
-    public List<Loan> getAllActiveLoans (){
-        return repository.findByLoansActive(LoanStatus.ACTIVE);
-    }
-
-    public List<Loan> getActiveLoansByUser(Long userId){
-        return repository.findByUserIdAndStatus(userId, LoanStatus.ACTIVE);
-    }
-
     public Boolean hasReachedLoanLimit (Long userId){
         int activeLoans = repository.countByUserIdAndStatus(userId, LoanStatus.ACTIVE);
         int limit = 3;
         return activeLoans >= limit;
-    }
-
-    public BigDecimal getTotalPendingFines (Long userId){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        BigDecimal total = BigDecimal.ZERO;
-
-        for(Loan loan : user.getLoans()){
-            if (loan.getFineAmount() != null){
-                total = total.add(loan.getFineAmount());
-            }
-        }
-
-        return total;
     }
 
     public Boolean hasPendingFines(Long userId){

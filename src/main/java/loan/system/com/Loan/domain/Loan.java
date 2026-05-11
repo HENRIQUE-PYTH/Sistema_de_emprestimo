@@ -16,7 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "Loans")
+@Table(name = "loan")
 public class Loan {
 
     @Id
