@@ -53,7 +53,7 @@ public class LoanController {
                 .toList();
     }
 
-    @GetMapping("/loans/active")
+    @GetMapping("/active")
     @Operation(
             summary = "list of active loans",
             description = "Returns a list containing only active loans."
@@ -71,7 +71,7 @@ public class LoanController {
                 .toList();
     }
 
-    @GetMapping("/loan/{userId}/active")
+    @GetMapping("/{userId}/active")
     @Operation(
             summary = "active business owners of a user.",
             description = "Search for a user by ID to view their active loans."
@@ -94,7 +94,7 @@ public class LoanController {
                 .toList();
     }
 
-    @GetMapping("/loan/{userId}/history")
+    @GetMapping("/{userId}/history")
     @Operation(
             summary = "user's business history",
             description = "Search for a user by ID to view their loan history."
@@ -116,7 +116,7 @@ public class LoanController {
                 .toList();
     }
 
-    @GetMapping("/loans/overdue/users")
+    @GetMapping("/overdue/users")
     @Operation(
             summary =  "Users with overdue business owners",
             description = "Returns a list of only the users who have overdue loans."
@@ -215,7 +215,7 @@ public class LoanController {
                 .toList();
     }
 
-    @PostMapping
+    @PostMapping("/{userId}/{bookId}")
     @Operation(
             summary = "create a loan",
             description = "creates a book loan"
@@ -238,7 +238,7 @@ public class LoanController {
         return mapper.toResponse(loan);
     }
 
-    @PostMapping("/loans/{loanId}/return")
+    @PostMapping("/{loanId}/return")
     @Operation(
             summary = "loan return",
             description = "the loan that the user took out and was returned"

@@ -78,7 +78,7 @@ public class BookController {
     @DeleteMapping("/{id}/delete")
     @Operation(
             summary = "Delete the book by ID.",
-            description = "Search for a book by its ID and permanently delete it."
+            description = "Search for a book by its ID and delete only its software."
     )
     @ApiResponse(
             responseCode = "204",
@@ -91,6 +91,25 @@ public class BookController {
     )
     public ResponseEntity<Void> deleteBook (@PathVariable Long id){
         service.deleteBook(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/restore")
+    @Operation(
+            summary = "restore the book by Id",
+            description = "Find a book that was deleted by ID and restore it."
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "Book successfully restored"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Book not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+    )
+    public ResponseEntity<Void> restoreBook(@PathVariable Long id){
+        service.restoreBook(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -3,8 +3,10 @@ package loan.system.com.Loan.service;
 import loan.system.com.Book.BookStatus;
 import loan.system.com.Book.domain.Book;
 import loan.system.com.Book.repository.BookRepository;
+import loan.system.com.Loan.LoanMapper.LoanMapper;
 import loan.system.com.Loan.LoanStatus;
 import loan.system.com.Loan.domain.Loan;
+import loan.system.com.Loan.dto.LoanResponseDTO;
 import loan.system.com.Loan.repository.LoanRepository;
 import loan.system.com.User.UserStatus;
 import loan.system.com.User.domain.User;
@@ -12,6 +14,8 @@ import loan.system.com.User.repository.UserRepository;
 import loan.system.com.exception.ConflictRequestException;
 import loan.system.com.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -26,7 +30,10 @@ public class LoanService {
     private final UserRepository userRepository;
     private final LoanRuleService service;
 
-    public LoanService(LoanRepository repository, BookRepository bookRepository, UserRepository userRepository, LoanRuleService service) {
+    public LoanService(LoanRepository repository,
+                       BookRepository bookRepository,
+                       UserRepository userRepository,
+                       LoanRuleService service) {
         this.repository = repository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
@@ -104,9 +111,11 @@ public class LoanService {
         if (user.getStatus() == UserStatus.INACTIVE || user.getStatus() == UserStatus.BLOCKED){
             throw new ConflictRequestException("This user is blocked or inactive");
         }
-        if (book.getStatus() != BookStatus.LOANED){
+        if (book.getStatus() == BookStatus.LOANED){
             throw new ConflictRequestException("This book is already borrowed");
         }
+        book.setStatus(BookStatus.LOANED);
+
         if (!book.getActive()){
             throw new ConflictRequestException("This is book is not available");
         }
@@ -120,36 +129,23 @@ public class LoanService {
             user.setStatus(UserStatus.BLOCKED);
             throw new ConflictRequestException("The user is blocked");
         }
-        Loan loan = new Loan();
 
         LocalDate loanDate = LocalDate.now();
         LocalDate dueDate = loanDate.plusDays(7);
 
-        long daysLate = 0;
-
-        LocalDate baseDate = (loan.getReturnDate() != null)
-                ? loan.getReturnDate()
-                : LocalDate.now();
-
-        if (baseDate.isAfter(loan.getDueDate())) {
-            daysLate = ChronoUnit.DAYS.between(loan.getDueDate(), baseDate);
-        }
-
         BigDecimal finePerDay = new BigDecimal("2.50");
-
-        BigDecimal fineAmount = finePerDay.multiply(BigDecimal.valueOf(daysLate));
 
         Loan loanSave = new Loan(
                 user,
                 book,
                 loanDate,
                 dueDate,
-                baseDate,
-                fineAmount,
-                finePerDay,
+                null,
+                BigDecimal.ZERO,
+                BigDecimal.ZERO,
                 LoanStatus.ACTIVE
         );
-        userRepository.save(user);
+        bookRepository.save(book);
         return repository.save(loanSave);
     }
 
@@ -192,6 +188,7 @@ public class LoanService {
         return repository.save(loan);
     }
 
+    @Transactional
     public BigDecimal getTotalPendingFines (Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));

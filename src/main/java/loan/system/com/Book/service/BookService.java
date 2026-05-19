@@ -20,7 +20,7 @@ public class BookService {
 
 
     public Book findById (Long id){
-        Book book = repository.findById(id)
+        Book book = repository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
         return repository.save(book);
     }
@@ -62,6 +62,13 @@ public class BookService {
         Book book = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
         book.setActive(false);
+        repository.save(book);
+    }
+
+    public void restoreBook (Long id){
+        Book book = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Book not found"));
+        book.setActive(true);
         repository.save(book);
     }
 }

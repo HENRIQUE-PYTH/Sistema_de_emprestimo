@@ -7,9 +7,7 @@ import loan.system.com.User.domain.User;
 import loan.system.com.User.repository.UserRepository;
 import loan.system.com.exception.NotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LoanRuleService {
@@ -28,6 +26,7 @@ public class LoanRuleService {
         return activeLoans >= limit;
     }
 
+    @Transactional
     public Boolean hasPendingFines(Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
@@ -40,6 +39,7 @@ public class LoanRuleService {
         return false;
     }
 
+    @Transactional
     public Boolean hasOverdueLoans (Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));

@@ -10,6 +10,7 @@ public class ErrorResponse {
     public ErrorResponse(String menssagem, int status) {
         this.menssagem = menssagem;
         this.status = status;
+        this.timestamp = LocalDateTime.now();
     }
 
     public int getStatus() {
